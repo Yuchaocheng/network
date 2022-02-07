@@ -1,12 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>index.html</title>
 </head>
+
 <body>
     <h1>test</h1>
+
+    <button onclick="reqHeader()">发送ajax请求</button>
+
+    <!-- 请求静态资源 -->
+    <a href="/images/computed.png">下载资源</a>
+
+    <!-- 请求动态URL -->
+    <a href="/download">下载资源</a>
+
+    <!-- <form action="/form" method="post" enctype="application/x-www-form-urlencoded"> -->
+    <form action="/form" method="post">
+        <input type="input" name="user">
+        <input type="input" name="pass">
+        <button>登录</button>
+    </form>
+    <script>
+        const reqHeader = (() => {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://127.0.0.1:3100/string', true);
+            /* Refused to set unsafe header "User-Agent" */
+            xhr.setRequestHeader('User-Agent', "test")
+            // xhr.setRequestHeader('x-test', "1")
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            // xhr.setRequestHeader('Date1', 'Wed, 02 Feb 2022 06:52:03 GMT');
+            xhr.setRequestHeader('Date', 'Wed, 02 Feb 2022 06:52:03 GMT');
+            xhr.setRequestHeader('Accept-Language', 'zh-CN');
+            xhr.setRequestHeader('Connection', 'closed');
+            xhr.setRequestHeader('Referer', 'http://127.0.0.1:3000/test');
+            const jsonData = { test: "1" }
+            // xhr.send(JSON.stringify(jsonData))
+            xhr.send(null)
+        })
+
+    </script>
 </body>
+
 </html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+
+<body>
+    <form action="/login" method="post" name="form">
+        <div>
+            <span> 用户名： </span>
+            <input type="text" name="username">
+        </div>
+        <div>
+            <span> 密码： </span>
+            <input type="text" name="password">
+        </div>
+        <!-- Form表单里的提交按钮，提交后默认会跳转页面，所以说一般不使用这种默认形式 -->
+        <button type="button" onclick="login()">登录</button>
+    </form>
+
+    <button onclick="getData()"> 模拟登录后请求</button>
+
+    <script>
+        const login = (() => {
+            const { username, password } = document.form
+            axios.post('/login', {
+                username: username.value,
+                password: password.value
+            }).then(({ data }) => {
+                alert(data)
+            }).catch(({ response }) => {
+                if (response && response.data) {
+                    alert(response.data)
+                } else {
+                    alert('loginFailed')
+                }
+            })
+        })
+        const getData = (() => {
+            axios.get('/users').then(({ data }) => {
+                console.log(data, 'data');
+            }).catch(({ response }) => {
+                alert(response.data)
+            })
+        })
+    </script>
+</body>
+
+</html>
