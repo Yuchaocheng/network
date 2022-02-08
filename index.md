@@ -2808,13 +2808,13 @@ VPN（Virtual Private Network），译为：虚拟私人网络。
 
   一般工作在传输层或者数据链路层
 
-  ## tcpdump
+## tcpdump
 
-  tcpdump 是 linux 平台的抓包分析工具，Windows 版本是 WinDump
-  手册：https://www.tcpdump.org/manpages/tcpdump.1.html
-  教程：https://danielmiessler.com/study/tcpdump/
+tcpdump 是 linux 平台的抓包分析工具，Windows 版本是 WinDump
+手册：https://www.tcpdump.org/manpages/tcpdump.1.html
+教程：https://danielmiessler.com/study/tcpdump/
 
-  一般使用 wireshark 就可以了，tcpdump 是非图形化界面的，在命令行中显示的，所以使用起来没有那么直观。但是 tcpdump 抓到的包可以直接导入 wireShark 查看
+一般使用 wireshark 就可以了，tcpdump 是非图形化界面的，在命令行中显示的，所以使用起来没有那么直观。但是 tcpdump 抓到的包可以直接导入 wireShark 查看
 
 ## 网络爬虫（Web crawler）
 
@@ -2848,3 +2848,132 @@ VPN（Virtual Private Network），译为：虚拟私人网络。
 
 - 手机连接无线 wifi：
   路由器内部有一个无线 AP（Access Point-无线接入点），无线 AP 就可以和手机建立连接。所以手机天线先将数据发送给路由器的无线 AP，无线 AP 是路由器内部的一部分，再通过路由器连接到外网。WAN 口。
+
+## 网络层 - IPv6（Internet Protocol version 6）
+
+网际协议第 6 版，用它来取代 IPv4 主要是为了解决 IPv4 地址枯竭问题，同时它也在其他方面对于 IPv4 有许多改进
+
+然而长期以来 IPv4 在互联网流量中仍占据主要地位，IPv6 的使用增长缓慢，在 2019 年 12 月，通过 IPv6 使用 Google 服务的用户百分率首次超过 30%。因为需要设备、操作系统内核升级支持 IPv6
+
+IPv6 采用 128 位的地址，而 IPv4 使用的是 32 位。IPv6 地址是绝对用不完的。IPv4 的指数倍增长。
+
+### IPv6 - 地址格式
+
+Pv6 地址为 128bit，每 16bit 一组，共 8 组。每组以冒号“:”隔开，每组以 4 位十六进制方式表示
+例如 2001:0db8:86a3:08d3:1319:8a2e:0370:7344
+
+- 每组前面连续的 0 可以省略。下面的 IPv6 地址是等价的
+
+  1. 2001:0db8:02de:0000:0000:0000:0000:0e13
+  2. 2001:db8:2de:0:0:0:0:e13
+
+- 可以用双冒号“::”表示一组 0 或多组连续的 0，但只能出现一次。下面的 IPv6 地址是等价的
+
+  1.  2001:db8:2de:0:0:0:0:e13
+  2.  2001:db8:2de::e13
+
+  2001::25de::cade 是非法的，因为双冒号出现了两次，会造成歧义，无法知道多个双冒号它们分别代表的 0 次数
+
+- ::1 代表本地的环回地址（0:0:0:0:0:0:0:1）
+
+### IPv6 - 首部格式
+
+![IPv6首部格式](./iamges/IPv6首部格式.png)
+
+相比 IPv4 更加简洁一些，IPv6 有 40 字节的固定首部
+
+固定首部：
+
+- Version（4bit）：版本号
+  值为固定的 0110
+
+- Traffic Class：交通类别
+  指示数据包的类别或优先级，可以帮助路由器根据数据包的优先级处理流量
+  如果路由器发生拥塞，则优先级最低的数据包将被丢弃
+
+- Payload Length（16bit）：有效负载长度
+  最大值 65535 字节，包括了扩展头部、上层（传输层）数据的长度
+
+- Hop Limit（8bit）：跳数限制
+  与 IPv4 数据包中的 TTL（Time To Live） 相同
+
+- Source Address（128bit）：源 IPv6 地址
+
+- Destination Address（占 128bit）：目的 IPv6 地址
+
+- Flow Label（占 20bit）：流标签
+  指示数据包属于哪个特定序列（流）
+  用数据包的源地址、目的地址、流标签标识一个流
+
+- Next Header（8bit）：下一个头部
+  指示扩展头部（如果存在）的类型、上层数据包的协议类型（例如 TCP、UDP、ICMPv6）。
+  即扩展头部的类型也已经提前固定死了。所以根据类型对应表格。Next Header 存放的就是类型对应的值。
+  一个扩展头部的开头，会有下一个 Next Header，直到遇到类型为 TCP、UDP 等传输层数据的时候，说明扩展头部结束，下一部分为数据了
+
+  ## 即时通信（Instant Messaging，简称 IM）
+
+  即时通信，平时用的 QQ、微信，都属于典型的 IM 应用
+
+  国内的 IM 开发者社区：http://www.52im.net/
+
+  - IM 云服务
+
+    1. 网易云信：https://netease.im/
+    2. 腾讯云：https://cloud.tencent.com/product/im
+    3. 环信：https://www.easemob.com/
+
+  - 常用的协议
+
+    1. XMPP
+    2. MQTT
+    3. 自定义协议（一般基于 TCP，然后自定义数据包格式，精确到位）
+
+    ### 即时通信 - XMPP（Extensible Messaging and Presence Protocol）
+
+    译为：可扩展消息与存在协议，前身是 Jabber。基于 TCP，默认端口 5222、5269（为什么会有 2 个端口，一个端口是服务端与客户端通信的，另一个是客户端和客户端通信的）。
+
+    其特点为使用 XML 格式进行传输，体积较大、比较成熟的 IM 协议，开发者接入方便。
+
+    ### 即时通信 - MQTT（（Message Queuing Telemetry Transport）
+
+    消息队列遥测传输。基于 TCP，默认端口 1883、8883（带 SSL/TLS）
+
+    其特点为：
+
+    - 开销很小，以降低网络流量，信息冗余远小于 XMPP
+
+    - 不是专门为 IM 设计的协议，很多功能需要自己实现
+
+    - 很多人认为 MQTT 是最适合物联网（IoT，Internet of Things）的网络协议 -- 就是因为其开销很小，即使在很小的设备甚至单片机上也有较好的性能
+
+    ## 流媒体
+
+    流媒体（Streaming Media），又叫流式媒体
+
+    - 概念：是指将一连串的多媒体数据压缩后，经过互联网分段发送数据，在互联网上即时传输影音以供观赏的一种技术
+      也就是说，流媒体支持传输一部分就可使用一部分
+      此技术使得资料数据包得以像流水一样发送，不使用此技术，就必须在使用前下载整个媒体文件
+
+    - 常见协议：
+
+      1. RTP（Real-Time Transport Protocol），译为：实时传输协议，RFC3550、RFC3551，基于 UDP
+
+      2. RTCP（Real-Time Transport Control Protocol），译为：实时传输控制协议，RFC3550 ，基于 UDP，使用 RTP 的下一个端口
+
+      3. RTSP（Real-Time Streaming Protocol）译为：实时流协议，参考 RFC7820，基于 TCP/UDP 的 554 端口
+
+      4. RTMP（Real-Time Messaging Protocol），译为：实时消息传输协议，由 Adobe 公司出品
+
+      5. HLS（HTTP Live Streaming），基于 HTTP 的流媒体网络传输协议，苹果公司出品，参考：RFC 8216
+
+# 网络课程总结：
+
+主机 A 想要发送数据给主机 B
+主机 A => 交换机 => 路由器 => 路由器 ....... => 主机 B
+
+1. 浏览器输入 http://www.baidu.com
+2. 询问 DNS 获取百度服务器的 IP 地址
+3. 发送 HTTP 请求（浏览器调用操作系统的 Socket API 发送请求）
+4. 建立连接（TCP3 次握手）
+5. 发送 HTTP 请求报文
+6. 返回 HTTP 响应报文
