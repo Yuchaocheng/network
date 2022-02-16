@@ -1,3 +1,9 @@
+/*
+ * @Descripttion: 
+ * @Author: ycc
+ * @Date: 2022-01-24 06:39:26
+ * @LastEditTime: 2022-02-15 09:52:02
+ */
 const Koa = require('koa');
 const session = require('koa-session');
 const app = new Koa();
@@ -6,6 +12,7 @@ const json = require('koa-json');
 const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
 const logger = require('koa-logger');
+const range = require('koa-range'); // 支持range请求头
 
 const index = require('./routes/index');
 const users = require('./routes/users');
@@ -39,6 +46,7 @@ app.use(
     enableTypes: ['json', 'form', 'text'],
   })
 );
+app.use(range);
 app.use(json());
 app.use(logger());
 app.use(require('koa-static')(__dirname + '/public'));

@@ -1,3 +1,9 @@
+<!--
+ * @Descripttion: 
+ * @Author: ycc
+ * @Date: 2022-02-09 07:26:33
+ * @LastEditTime: 2022-02-15 09:43:33
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,7 +49,12 @@
             })
         })
         const getData = (() => {
-            axios.get('/users').then(({ data }) => {
+            axios.get('/users', {
+                headers: {
+                    'Accept-Language': 'zh-CN',
+                    Range:'bytes=5-10'
+                }
+            }).then(({ data }) => {
                 console.log(data, 'data');
             }).catch(({ response }) => {
                 alert(response.data)
